@@ -18,9 +18,12 @@ if (project.hasProperty("CustomReleaseVersion")) {
     // Remove release/ from the version if present
     version = project.property("CustomReleaseVersion").replaceFirst("^release/", "")
 } else {
-    String gitRevision = "git rev-parse HEAD".execute().text.trim()
-
-    version = eureka_version + '+' + gitRevision.substring(0, 10)
+    try {
+        String gitRevision = "git rev-parse HEAD".execute().text.trim()
+        version = eureka_version + '+' + gitRevision.substring(0, 10)
+    } catch (Exception e) {
+        version = eureka_version
+    }
 }
 
 architectury {
@@ -84,6 +87,10 @@ subprojects {
             // configure to output in checkstyle XML format
             reporter "checkstyle"
         }
+    }
+
+    kotlin {
+        jvmToolchain(17)
     }
 }
 
